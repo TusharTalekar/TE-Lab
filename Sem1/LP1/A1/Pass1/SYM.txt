@@ -1,0 +1,10 @@
+Symbol	Address
+N	114
+ONE	116
+TERM	117
+AGAIN	104
+LE	0
+TWO	118
+RESULT	115
+'1'	0
+'2'	0

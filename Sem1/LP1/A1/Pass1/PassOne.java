@@ -98,9 +98,9 @@ public class PassOne {
         REGTAB.put("CREG", 3);
         REGTAB.put("DREG", 4);
     }
-
-    public void processFile(String inputPath) throws IOException {
-        List<String> lines = Files.readAllLines(Paths.get(inputPath));
+    
+    public void processFile(String inoutPath) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(inoutPath));
 
         POOLTAB.add(0);   // as index from 1 
 
@@ -151,9 +151,7 @@ public class PassOne {
                     break;
 
                 case "IS":
-                    if (operands != null) {
-                        collectLiterals(operands);
-                    }
+                    if (operands != null) collectLiterals(operands);
                     IC.add(createIC(LOCCNTR, label, opcode, operands));
                     LOCCNTR++;
                     break;
@@ -165,11 +163,8 @@ public class PassOne {
                     } else if (opcode.equals("DS")) {
                         int size = 1;
                         if (operands != null) {
-                            try {
-                                size = Integer.parseInt(operands.trim());
-                            } catch (Exception e) {
-                                size = 1;
-                            }
+                            try { size = Integer.parseInt(operands.trim()); }
+                            catch (Exception e) { size = 1; }
                         }
                         IC.add(createIC(LOCCNTR, label, opcode, operands));
                         LOCCNTR += size;
@@ -186,7 +181,7 @@ public class PassOne {
         processLiteralPool(true);
 
         // --- Write outputs for Pass2 ---
-        Files.write(Paths.get("IC.txt"), IC);  
+        Files.write(Paths.get("IC.txt"), IC);   // instead of intermediate.txt
 
         List<String> symLines = new ArrayList<>();
         symLines.add("Symbol\tAddress");
@@ -211,6 +206,9 @@ public class PassOne {
 
         System.out.println("\nPass-I completed. Generated IC.txt, SYM.txt, LIT.txt");
     }
+
+
+
 
     private void collectLiterals(String operands) {
         if (operands == null) {
@@ -352,62 +350,64 @@ public class PassOne {
     }
 
     private String createIC(Integer loc, String label, String opcode, String operands) {
-        StringBuilder sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder();
 
-        // Location Counter
-        String locStr = (loc == null) ? "    " : String.format("%04d", loc);
-        sb.append(locStr).append("\t");
+    // Location Counter
+    String locStr = (loc == null) ? "    " : String.format("%04d", loc);
+    sb.append(locStr).append("\t");
 
-        OpEntry op = OPTAB.get(opcode);
-        if (op == null) {
-            sb.append("(??,??)\t");
-            return sb.toString();
-        }
+    OpEntry op = OPTAB.get(opcode);
+    if (op == null) {
+        sb.append("(??,??)\t");
+        return sb.toString();
+    }
 
-        sb.append("(").append(op.type).append(",").append(op.code).append(")\t");
+    sb.append("(").append(op.type).append(",").append(op.code).append(")\t");
 
-        if (operands != null && !operands.isEmpty()) {
-            String[] ops = operands.split("[, ]+");
-            for (String o : ops) {
-                o = o.trim();
-                if (o.isEmpty()) {
-                    continue;
-                }
+    if (operands != null && !operands.isEmpty()) {
+        String[] ops = operands.split("[, ]+");
+        for (String o : ops) {
+            o = o.trim();
+            if (o.isEmpty()) continue;
 
-                // Register
-                if (REGTAB.containsKey(o)) {
-                    sb.append("(R,").append(REGTAB.get(o)).append(")\t");
-                } // Literal
-                else if (o.startsWith("=")) {
-                    for (Map.Entry<Integer, Literal> e : LITTAB.entrySet()) {
-                        if (e.getValue().literal.equals(o)) {
-                            sb.append("(L,").append(e.getKey() + 1).append(")\t");
-                            break;
-                        }
-                    }
-                } // Symbol
-                else if (SYMTAB.containsKey(o)) {
-                    int symIndex = new ArrayList<>(SYMTAB.keySet()).indexOf(o) + 1;
-                    sb.append("(S,").append(symIndex).append(")\t");
-                } // Constant (number)
-                else {
-                    try {
-                        int val = Integer.parseInt(o);
-                        sb.append("(C,").append(val).append(")\t");
-                    } catch (Exception e) {
-                        // forward reference → add symbol if not exists
-                        if (!SYMTAB.containsKey(o)) {
-                            SYMTAB.put(o, new Symbol(o, null));
-                        }
-                        int symIndex = new ArrayList<>(SYMTAB.keySet()).indexOf(o) + 1;
-                        sb.append("(S,").append(symIndex).append(")\t");
+            // Register
+            if (REGTAB.containsKey(o)) {
+                sb.append("(R,").append(REGTAB.get(o)).append(")\t");
+            }
+            // Literal
+            else if (o.startsWith("=")) {
+                for (Map.Entry<Integer, Literal> e : LITTAB.entrySet()) {
+                    if (e.getValue().literal.equals(o)) {
+                        sb.append("(L,").append(e.getKey() + 1).append(")\t");
+                        break;
                     }
                 }
             }
+            // Symbol
+            else if (SYMTAB.containsKey(o)) {
+                int symIndex = new ArrayList<>(SYMTAB.keySet()).indexOf(o) + 1;
+                sb.append("(S,").append(symIndex).append(")\t");
+            }
+            // Constant (number)
+            else {
+                try {
+                    int val = Integer.parseInt(o);
+                    sb.append("(C,").append(val).append(")\t");
+                } catch (Exception e) {
+                    // forward reference → add symbol if not exists
+                    if (!SYMTAB.containsKey(o)) {
+                        SYMTAB.put(o, new Symbol(o, null));
+                    }
+                    int symIndex = new ArrayList<>(SYMTAB.keySet()).indexOf(o) + 1;
+                    sb.append("(S,").append(symIndex).append(")\t");
+                }
+            }
         }
-
-        return sb.toString().trim();
     }
+
+    return sb.toString().trim();
+}
+
 
     private Integer evaluateExpression(String expr) {
         expr = expr.replaceAll("\\s+", "");

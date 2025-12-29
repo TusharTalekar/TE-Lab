@@ -1,5 +1,4 @@
 // package Assignment12;
-
 import java.util.Scanner;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
@@ -20,27 +19,27 @@ public class App {
         return choice == given;
     }
 
-    public static void createConnection() throws Exception {
-        // connect to local MongoDB server
-        mongoClient = MongoClients.create("mongodb://localhost:27017");
-        db = mongoClient.getDatabase("WaterDB"); // you can choose any db name
-        System.out.println("✅ Connected to local database: " + db.getName());
+public static void createConnection() throws Exception {
+    // connect to local MongoDB server
+    mongoClient = MongoClients.create("mongodb://localhost:27017");
+    db = mongoClient.getDatabase("WaterDB"); // you can choose any db name
+    System.out.println("✅ Connected to local database: " + db.getName());
 
-        // Create collection if not exists
-        boolean exists = false;
-        for (String name : db.listCollectionNames()) {
-            if (name.equals("WaterData")) {
-                exists = true;
-                break;
-            }
-        }
-        if (!exists) {
-            db.createCollection("WaterData");
-            System.out.println("🆕 Created collection: WaterData");
-        } else {
-            System.out.println("📘 Using existing collection: WaterData");
+    // Create collection if not exists
+    boolean exists = false;
+    for (String name : db.listCollectionNames()) {
+        if (name.equals("WaterData")) {
+            exists = true;
+            break;
         }
     }
+    if (!exists) {
+        db.createCollection("WaterData");
+        System.out.println("🆕 Created collection: WaterData");
+    } else {
+        System.out.println("📘 Using existing collection: WaterData");
+    }
+}
 
     public static void insertData(Scanner sc) {
         MongoCollection<Document> collection = db.getCollection("WaterData");
@@ -100,11 +99,10 @@ public class App {
         );
 
         var result = collection.updateOne(filter, updates);
-        if (result.getMatchedCount() > 0) {
+        if (result.getMatchedCount() > 0)
             print("✅ Record updated successfully!");
-        } else {
+        else
             print("⚠️ City not found!");
-        }
     }
 
     public static void deleteData(Scanner sc) {
@@ -114,11 +112,10 @@ public class App {
         String city = sc.nextLine();
 
         var result = collection.deleteOne(Filters.eq("city", city));
-        if (result.getDeletedCount() > 0) {
+        if (result.getDeletedCount() > 0)
             print("🗑️ Record deleted successfully!");
-        } else {
+        else
             print("⚠️ City not found!");
-        }
     }
 
     public static void main(String[] args) {
@@ -142,15 +139,11 @@ public class App {
                 print("Enter choice: ");
                 int choice = sc.nextInt();
 
-                if (checker(choice, 1)) {
-                    getData(sc);
-                } else if (checker(choice, 2)) {
-                    insertData(sc);
-                } else if (checker(choice, 3)) {
-                    updateData(sc);
-                } else if (checker(choice, 4)) {
-                    deleteData(sc);
-                } else if (checker(choice, 5)) {
+                if (checker(choice, 1)) getData(sc);
+                else if (checker(choice, 2)) insertData(sc);
+                else if (checker(choice, 3)) updateData(sc);
+                else if (checker(choice, 4)) deleteData(sc);
+                else if (checker(choice, 5)) {
                     mongoClient.close();
                     print("🌿 Thank You !");
                     break;
