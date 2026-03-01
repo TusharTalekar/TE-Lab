@@ -1,0 +1,5 @@
+Natural Language Processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language. The ultimate goal of NLP is to enable computers to understand, interpret, and generate human language in a way that is both meaningful and useful.
+
+Key tasks in NLP include tokenization, which breaks text into words or sentences; POS tagging, which identifies parts of speech; stop words removal to filter common words; stemming to reduce words to their root form; and lemmatization, which normalizes words to their base or dictionary form.
+
+Applications of NLP span various domains such as sentiment analysis, machine translation, chatbots, and text summarization.
