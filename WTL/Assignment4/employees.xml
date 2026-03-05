@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE employees SYSTEM "employees.dtd">
+<?xml-stylesheet type="text/xsl" href="employees.xsl"?>
+<employees>
+    <employee id="E101">
+        <name>Manoj Kumar</name>
+        <department>IT</department>
+        <designation>Software Engineer</designation>
+        <salary>60000</salary>
+        <email>Manoj@company.com</email>
+    </employee>
+
+    <employee id="E102">
+        <name>Anita Sharma</name>
+        <department>HR</department>
+        <designation>HR Manager</designation>
+        <salary>55000</salary>
+        <email>anita@company.com</email>
+    </employee>
+</employees>

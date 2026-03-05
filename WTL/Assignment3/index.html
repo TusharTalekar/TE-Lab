@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGadgets</title>
+</head>
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .product-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .product-table th {
+        background: #f4f4f4;
+        font-weight: bold;
+    }
+
+    .feature-list {
+        margin: 10px 0;
+        padding-left: 20px;
+    }
+
+    button {
+        background: #667eea;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #5a67d8;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 9px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background: white;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close {
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    <header style="background:#764ba2; text-align: center;padding: 20px; color: white;">
+        <h1 style="align-items:center;margin: 0;font-size :2.5rem;">TechGadgets Store</h1>
+        <p style="margin: 5px 0 0 0;font-size:1rem;">Your one-stop shop for premium electronics</p>
+    </header>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#products">Product</a></li>
+            <li><a href="#features">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="products">
+            <h2>Featured products</h2>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Rating</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="phone1.jpg" width="200" placeholder="iPhone 15 Pro">
+                            iPhone 15 Pro
+                        </td>
+                        <td>100,000</td>
+                        <td>5</td>
+                        <td><button onclick="addToCart('iPhone 15 Pro',100000)">Add to Cart</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="phone2.jpg" width="200" placeholder="Galaxy S24 Ultra">
+                            Galaxy S24 Ultra
+                        </td>
+                        <td>120,000</td>
+                        <td>4.5</td>
+                        <td><button onclick="addToCart('Galaxy S24 Ultra',120000)">Add to Cart</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="features">
+            <h2>Why Choose us?</h2>
+            <h3>Our Services:</h3>
+            <ol class="feature-list">
+                <li>Free shipping on orders over $50</li>
+                <li>30-day money-back guarantee</li>
+                <li>24/7 customer support</li>
+            </ol>
+
+            <h3>Payment Methods:</h3>
+            <ul class="feature-list">
+                <li>Credit/Debit Cards</li>
+                <li>PayPal</li>
+                <li>Bank Transfer</li>
+                <li>Cash on Delivery</li>
+            </ul>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form id="contactForm" onsubmit="return validateForm(event)">
+                <div class="form-group">
+                    <label for="name">Full name</label>
+                    <input type="text" id="name" name="name" required>
+                    <span class="error" id="nameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="name">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <span class="error" id="emailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone">
+                    <span class="error" id="phoneError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+            <iframe src="https://www.google.com/maps" width="100%" height="300"></iframe>
+        </section>
+    </main>
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">Shopping Cart</h3>
+            <div id="cartItems"></div>
+            <p>Total: $<span id="cartTotal">0</span></p>
+            <button onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let cartTotal = 0;
+        function addToCart(productName, price) {
+            const userConfirm = confirm(`Add ${productName} ($${price}) to cart?`);
+            if (userConfirm) {
+                cart.push({ name: productName, price: price });
+                cartTotal += price;
+                alert(`${productName} added to cart!`);
+                updateCartDisplay();
+            }
+        }
+        function validateForm(event) {
+            event.preventDefault();
+
+            let isValid = true;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            clearErrors();
+
+            if (name.length < 2) {
+                showError('nameError', 'Name must be at least 2 characters');
+                isValid = false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('emailError', 'Please enter a valid email');
+                isValid = false;
+            }
+
+            if (phone && !/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
+                showError('phoneErrormodal when', 'Phone must be 10 digits');
+                isValid = false;
+            }
+
+            if (message.length < 10) {
+                showError('messageError', 'Message must be at least 10 characters');
+                isValid = false;
+            }
+
+            if (isValid) {
+                const userName = prompt('Enter your name to confirm submission:');
+                if (userName) {
+                    alert(`Thank you, ${userName}! Your message has been sent successfully.`);
+                    document.getElementById('contactForm').reset();
+                }
+            }
+
+            return false;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+
+        function clearErrors() {
+            const errors = document.querySelectorAll('.error');
+            errors.forEach(error => error.textContent = '');
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const total = document.getElementById('cartTotal');
+
+            cartItems.innerHTML = cart.map(item =>
+                `<p>${item.name} - $${item.price}</p>`
+            ).join('');
+            total.textContent = cartTotal.toFixed(2);
+
+            document.getElementById('cartModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                closeModal();
+                return;
+            }
+            alert(`Proceeding to checkout with ${cart.length} items totaling $${cartTotal}!`);
+            cart = [];
+            cartTotal = 0;
+            closeModal();
+        }
+
+        // Close clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('cartModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+
+</html>
