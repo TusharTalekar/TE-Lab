@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SecureBank Chatbot</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f9;
+        margin: 0;
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 250px;
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+      }
+
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: #16a085;
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      .chat-box {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: white;
+      }
+
+      .message {
+        margin: 10px 0;
+      }
+
+      .user {
+        text-align: right;
+        color: #2c3e50;
+      }
+
+      .bot {
+        text-align: left;
+        color: #16a085;
+      }
+
+      .input-area {
+        display: flex;
+        border-top: 1px solid #ccc;
+        background: white;
+      }
+
+      input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px 20px;
+        background: #16a085;
+        border: none;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #13856d;
+      }
+
+      .account-input {
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        background: #ecf0f1;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>🏦 Demo Account</h2>
+
+      <p><b>Name:</b> Rahul Sharma</p>
+      <p><b>Account Number:</b> 1234567890</p>
+      <p><b>Balance:</b> ₹45820</p>
+      <p><b>Card Status:</b> <span id="cardStatus">Active</span></p>
+
+      <p style="margin-top: 30px; font-size: 12px">
+        Demo banking system for assignment.
+      </p>
+    </div>
+
+    <div class="main">
+      <div class="header">SecureBank Customer Support</div>
+
+      <div id="chatBox" class="chat-box">
+        <div class="bot message">
+          Bot: Welcome to SecureBank Customer Support!
+        </div>
+
+        <div class="bot message">Bot: How can I assist you today?</div>
+      </div>
+
+      <!-- Account number input -->
+      <div id="accountSection" class="account-input">
+        Enter Account Number:
+        <input id="accountInput" />
+        <button onclick="checkBalance()">Submit</button>
+      </div>
+
+      <div class="input-area">
+        <input id="userInput" placeholder="Type your message..." />
+        <button id="userBtn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      const account = {
+        name: "Rahul Sharma",
+        accountNumber: "1234567890",
+        balance: 45820,
+        cardStatus: "Active",
+      };
+
+      const greetingKeywords = ["h", "hi", "hello", "hey"];
+      const balanceKeywords = ["balance", "check balance"];
+      const loanKeywords = ["loan", "borrow", "interest"];
+      const hoursKeywords = ["hours", "open", "time", "working"];
+
+      let waitingForAccount = false;
+
+      function containsKeyword(input, keywords) {
+        for (let word of keywords) {
+          if (input.includes(word)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function getBotResponse(input) {
+        if (containsKeyword(input, greetingKeywords)) {
+          return "Hello " + account.name + "! How can I assist you today?";
+        } else if (containsKeyword(input, balanceKeywords)) {
+          waitingForAccount = true;
+          document.getElementById("accountSection").style.display = "block";
+
+          return "Please enter your account number below.";
+        } else if (containsKeyword(input, loanKeywords)) {
+          return `<br>Available Loans:
+<br>Personal Loan – 10% interest
+<br>Home Loan – 7.5% interest
+<br>Car Loan – 8.2% interest`;
+        } else if (
+          input.includes("lost") ||
+          input.includes("stolen") ||
+          input.includes("block")
+        ) {
+          account.cardStatus = "Blocked";
+          document.getElementById("cardStatus").innerText = "Blocked";
+
+          return "Your card has been BLOCKED for security.";
+        } else if (input.includes("card")) {
+          return "Your card status is: " + account.cardStatus;
+        } else if (containsKeyword(input, hoursKeywords)) {
+          return "Our branches are open Monday to Friday from 9 AM to 5 PM.";
+        } else if (input === "exit") {
+          return "Thank you for banking with us. Goodbye!";
+        } else {
+          return "I'm sorry, I didn't understand that. Please rephrase.";
+        }
+      }
+
+      function sendMessage() {
+        document.getElementById("accountSection").style.display = "none";
+        waitingForAccount = false;
+
+        const input = document.getElementById("userInput");
+        const message = input.value.toLowerCase().trim();
+        if (message === "") return;
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div class="message user">You: ${message}</div>`;
+        const response = getBotResponse(message);
+        chatBox.innerHTML += `<div class="message bot">Bot: ${response}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+        input.value = "";
+      }
+
+      function checkBalance() {
+        const acc = document.getElementById("accountInput").value;
+        const chatBox = document.getElementById("chatBox");
+        if (acc === account.accountNumber) {
+          chatBox.innerHTML += `<div class="message bot">Bot: Your account balance is ₹${account.balance}</div>`;
+        } else {
+          chatBox.innerHTML += `<div class="message bot">Bot: Invalid account number.</div>`;
+        }
+        document.getElementById("accountSection").style.display = "none";
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      document
+        .getElementById("userInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+          }
+        });
+      document
+        .getElementById("accountInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            checkBalance();
+          }
+        });
+    </script>
+  </body>
+</html>
