@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<head>
+    <title>Document</title>
+</head>
+<style>
+    .ip1.ng-invalid {
+        background-color: lightblue;
+    }
+
+    .ip1.ng-empty {
+        background-color: aquamarine;
+    }
+
+    .ip1.ng-touched {
+        background-color: red;
+    }
+</style>
+
+<body>
+    <!-- The ng-model Directive
+    Two-Way Binding
+    Validate User Input
+    Application Status -->
+
+    <form ng-app="" name="myForm">
+        <!-- Validate User Input:The ng-model directive can provide type validation for application data (number, e-mail, required): -->
+        Email 1:
+        <input type="email" name="myAddress1" ng-model="text">
+        <span ng-show="myForm.myAddress1.$error.email">Not a valid e-mail address</span>
+        <br>
+
+        <!-- Application Status:The ng-model directive can provide status for application data (valid, dirty, touched, error): -->
+        Email 2:
+        <input type="email" name="myAddress" ng-model="myText" required>
+        <h1>Application Status</h1>
+        <div style="background-color: blue;" ng-show="myForm.myAddress.$touched">touched</div>
+        <br>valid: {{myForm.myAddress.$valid}}
+        <br>dirty: {{myForm.myAddress.$dirty}}
+        <br>touched: {{myForm.myAddress.$touched}}
+        <br>
+        Enter your name:
+        <input class="ip1" placeholder="Name" name="myName" ng-model="myText2" required>
+    </form>
+
+    <!-- The ng-model directive adds/removes the following classes, according to the status of the form field:
+        ng-empty
+        ng-not-empty
+        ng-touched
+        ng-untouched
+        ng-valid
+        ng-invalid
+        ng-dirty
+        ng-pending
+        ng-pristine
+    -->
+</body>
+
+</html>

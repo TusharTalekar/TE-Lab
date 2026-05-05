@@ -1,0 +1,6 @@
+AngularJS extends HTML with ng-directives.
+ng-app => defines an AngularJS application.
+ng-model => binds the value of HTML controls (input, select, textarea) to application data.
+ng-bind => binds application data to the HTML view.
+ng-init => initializes AngularJS application variables.
+ng-repeat => actually clones HTML elements once for each item in a collection, used on an array of objects:

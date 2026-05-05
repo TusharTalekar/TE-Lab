@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<head>
+    <title>Basics2</title>
+</head>
+
+<body ng-app="myApp">
+    <!-- New directives are created by using the .directive function. -->
+    
+    <!-- Element name -->
+    <hello-world></hello-world>
+    <!-- Attribute -->
+    <div hello-world></div>
+    <!-- Class -->
+    <div class="hello-world"></div>
+    <!-- Comment -->
+    <!-- directive: hello-world -->
+
+    <script>
+        var app = angular.module("myApp", []);
+        app.directive("helloWorld", function () {
+            return {
+                restrict: 'EACM',  // Enables Element, Attribute, Class, and Comment
+                replace: true,  // This is crucial for comment directives
+                template: "<h1>Made by a directive!</h1>"
+            };
+        });
+    </script>
+
+    <!-- You can invoke a directive by using:
+        Element name
+        Attribute
+        Class
+        Comment     -->
+    <!-- The legal restrict values are:
+        E for Element name
+        A for Attribute
+        C for Class
+        M for Comment
+    By default the value is EA, meaning that both Element names and attribute names can invoke the directive. -->
+</body>
+
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<body>
+    <div ng-app="" ng-init="kk='JJ'">
+        <p>Name : <input type="text" ng-model="name"></p>
+        <h1>Hello {{name}}</h1>
+        <p ng-bind="name"></p>
+        <p>expression: {{ 5 + 5 }}</p>
+        {{kk}}
+    </div>
+
+    <h1>directives</h1>
+    <div ng-app="myApp" w3-test-directive ng-controller="myCtrl">
+        First Name: <input type="text" ng-model="firstName"><br>
+        Last Name: <input type="text" ng-model="lastName"><br>
+        <br>
+        Full Name: {{firstName + " " + lastName}}
+        <p>The name is <span ng-bind="firstName + ' ' + lastName"></span></p>
+    </div>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function ($scope) {
+            $scope.firstName = "John";
+            $scope.lastName = "Doe";
+        });
+        // AngularJS has a set of built-in directives which you can use to add functionality to your application.
+        // In addition you can use the module to add your own directives to your applications:
+        app.directive("w3TestDirective", function () {
+            return {
+                template: "I was made in a directive constructor!"
+            };
+        });
+    </script>
+
+
+    <!-- When to Load the Library -->
+    <!-- While it is common in HTML applications to place scripts at the end of the <body> element, it is recommended that you load the AngularJS library either in the <head> or at the start of the <body>.
+    This is because calls to angular.module can only be compiled after the library has been loaded. -->
+
+
+    <!-- <div ng-app="" ng-init="myCol='lightblue';quantity=1;cost=5">
+        <input style="background-color:{{myCol}};" ng-model="myCol">
+        <p>Total in dollar: {{ quantity * cost }}</p>
+    </div> -->
+
+    <div ng-app="" ng-init="person={firstName:'John',lastName:'Doe'};points=[1,15,19,2,40]">
+        <p>The name is {{ person.lastName }}</p>
+        <p>The third result is {{ points[2] }}</p>
+    </div>
+
+    <div ng-app="" ng-init="names=['Jani','Hege','Kai']">
+        <ul>
+            <li ng-repeat="x in names">
+                {{ x }}
+            </li>
+        </ul>
+    </div>
+
+
+
+    <!-- Only ONE ng-app is auto-bootstrapped  -->
+    <!-- using multiple `ng-app` directives in this page.
+    While AngularJS allows this, it is NOT recommended.
+    WHY?
+    1. Each `ng-app` creates a separate AngularJS application.
+    - They do NOT share data, scope, or controllers.
+    - Each section works independently.
+    2. This makes the code harder to maintain and debug.
+    - Variables from one section cannot be used in another.
+    - Confusion increases in larger applications.
+    3. Best Practice:
+    - Use ONLY ONE `ng-app` per page.
+    - Organize code using multiple controllers inside that single app. 
+    -->
+
+</body>
+
+</html>

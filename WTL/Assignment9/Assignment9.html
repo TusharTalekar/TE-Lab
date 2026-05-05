@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <title>AngularJS Auth App</title>
+</head>
+<style>
+    body {
+        font-family: Arial;
+        margin: 20px;
+    }
+
+    input {
+        margin: 5px 0;
+        padding: 8px;
+        width: 200px;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+</style>
+
+<body ng-controller="AuthController">
+
+    <h1>AngularJS Registration & Login</h1>
+
+    <button ng-click="showRegister()">Register</button>
+    <button ng-click="showLogin()">Login</button>
+
+    <!-- register  -->
+    <div ng-show="isRegister">
+        <h2>Register</h2>
+        <form ng-submit="register()">
+            <input type="text" ng-model="user.firstName" placeholder="First Name" required><br>
+            <input type="text" ng-model="user.lastName" placeholder="Last Name" required><br>
+            <input type="text" ng-model="user.username" placeholder="Username" required><br>
+            <input type="password" ng-model="user.password" placeholder="Password" required><br>
+            <button type="submit">Register</button>
+        </form>
+        <p style="color:green">{{regMessage}}</p>
+    </div>
+
+    <!-- Login -->
+    <div ng-show="isLogin">
+        <h2>Login</h2>
+        <form ng-submit="login()">
+            <input type="text" ng-model="loginData.username" placeholder="Username" required><br>
+            <input type="password" ng-model="loginData.password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p style="color:red">{{loginMessage}}</p>
+    </div>
+
+    <!-- home -->
+    <div ng-show="isLoggedIn">
+        <h2>Welcome, {{currentUser.firstName}}!</h2>
+        <button ng-click="logout()">Logout</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module("myApp", []);
+
+        app.controller("AuthController", function ($scope) {
+
+            $scope.users = []; // Store users (temporary)
+
+            $scope.isRegister = true;
+            $scope.isLogin = false;
+
+            $scope.isLoggedIn = false;
+
+            // Toggle Views
+            $scope.showRegister = function () {
+                $scope.isRegister = true;
+                $scope.isLogin = false;
+            };
+
+            $scope.showLogin = function () {
+                $scope.isRegister = false;
+                $scope.isLogin = true;
+            };
+
+            // Register Function
+            $scope.register = function () {
+                var exists = $scope.users.find(u => u.username === $scope.user.username);
+
+                if (exists) {
+                    $scope.regMessage = "Username already exists!";
+                } else {
+                    $scope.users.push(angular.copy($scope.user));
+                    $scope.regMessage = "Registration successful!";
+                    $scope.user = {};
+                }
+            };
+
+            // Login Function
+            $scope.login = function () {
+                var user = $scope.users.find(u =>
+                    u.username === $scope.loginData.username &&
+                    u.password === $scope.loginData.password
+                );
+
+                if (user) {
+                    $scope.currentUser = user;
+                    $scope.isLoggedIn = true;
+                    $scope.isLogin = false;
+                    $scope.loginMessage = "";
+                } else {
+                    $scope.loginMessage = "Invalid username or password!";
+                }
+            };
+
+            // Logout
+            $scope.logout = function () {
+                $scope.isLoggedIn = false;
+                $scope.isLogin = true;
+            };
+        });
+    </script>
+</body>
+
+</html>

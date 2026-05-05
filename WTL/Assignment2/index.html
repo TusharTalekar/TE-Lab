@@ -87,6 +87,14 @@
         max-width: 500px;
     }
 
+    .gadgetImg {
+        display: flex;
+        align-items: center;
+    }
+    .gadgetImg img{
+        margin: 0 50px;
+    }
+
     .close {
         float: right;
         font-size: 28px;
@@ -123,8 +131,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <img src="phone1.jpg" width="200" placeholder="iPhone 15 Pro">
+                        <td class="gadgetImg">
+                            <img src="phone1.jpg" width="100" placeholder="iPhone 15 Pro">
                             iPhone 15 Pro
                         </td>
                         <td>100,000</td>
@@ -132,8 +140,8 @@
                         <td><button onclick="addToCart('iPhone 15 Pro',100000)">Add to Cart</button></td>
                     </tr>
                     <tr>
-                        <td>
-                            <img src="phone2.jpg" width="200" placeholder="Galaxy S24 Ultra">
+                        <td class="gadgetImg">
+                            <img src="phone2.jpg" width="150" placeholder="Galaxy S24 Ultra">
                             Galaxy S24 Ultra
                         </td>
                         <td>120,000</td>
@@ -187,7 +195,7 @@
                 </div>
                 <button type="submit">Send Message</button>
             </form>
-            <iframe src="https://www.google.com/maps" width="100%" height="300"></iframe>
+            <!-- <iframe src="https://www.google.com/maps" width="100%" height="300"></iframe> -->
         </section>
     </main>
     <div id="cartModal" class="modal">
@@ -227,7 +235,10 @@
                 showError('nameError', 'Name must be at least 2 characters');
                 isValid = false;
             }
-
+            if (/\d/.test(name)) {
+                showError('nameError', 'Name must be characters only not digits');
+                isValid = false;
+            }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showError('emailError', 'Please enter a valid email');
@@ -235,7 +246,7 @@
             }
 
             if (phone && !/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
-                showError('phoneErrormodal when', 'Phone must be 10 digits');
+                showError('phoneError', 'Phone must be 10 digits');
                 isValid = false;
             }
 
