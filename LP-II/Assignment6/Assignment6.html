@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Performance Evaluation</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f3f4f6;
+    padding:20px;
+}
+
+/* MAIN CONTAINER */
+
+.container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+/* CARDS */
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    margin-bottom:20px;
+    color:#111827;
+}
+
+/* INPUT GRID */
+
+.input-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.input-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-box.full{
+    grid-column:1 / 3;
+}
+
+label{
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+input,
+select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+}
+
+/* BUTTON */
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+/* RESULT */
+
+.result-box{
+    background:#eef2ff;
+    padding:20px;
+    border-radius:10px;
+    line-height:1.8;
+    min-height:250px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .container{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .input-grid{
+        grid-template-columns:1fr;
+    }
+
+    .input-box.full{
+        grid-column:auto;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- INPUT SECTION -->
+
+    <div class="card">
+
+        <h2>Employee Input</h2>
+
+        <div class="input-grid">
+
+            <div class="input-box">
+                <label>Attendance (%)</label>
+                <input type="number" id="attendance">
+            </div>
+
+            <div class="input-box">
+                <label>Work Quality (1-10)</label>
+                <input type="number" id="quality">
+            </div>
+
+            <div class="input-box">
+                <label>Teamwork (1-10)</label>
+                <input type="number" id="teamwork">
+            </div>
+
+            <div class="input-box">
+                <label>Projects Completed</label>
+                <input type="number" id="projects">
+            </div>
+
+            <div class="input-box full">
+                <label>Deadline Met</label>
+
+                <select id="deadline">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="input-box full">
+                <button onclick="evaluateEmployee()">
+                    Evaluate Employee
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT SECTION -->
+
+    <div class="card">
+
+        <h2>Evaluation Result</h2>
+
+        <div class="result-box" id="result">
+
+            <p>Employee evaluation result will appear here.</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function evaluateEmployee(){
+
+    let attendance =
+    parseInt(document.getElementById("attendance").value);
+
+    let quality =
+    parseInt(document.getElementById("quality").value);
+
+    let teamwork =
+    parseInt(document.getElementById("teamwork").value);
+
+    let projects =
+    parseInt(document.getElementById("projects").value);
+
+    let deadline =
+    document.getElementById("deadline").value === "true";
+
+    let rating = "";
+    let reason = "";
+    let suggestion = "";
+
+
+    if(attendance > 90 && quality > 8 && teamwork > 8 && deadline && projects >= 5){
+
+        rating = "Outstanding Performer";
+        reason = "Excellent attendance, quality work, teamwork and deadlines.";
+        suggestion = "Ready for promotion and leadership roles.";
+
+    }
+
+    else if(attendance > 90 && quality > 8 && teamwork > 8 && deadline){
+
+        rating = "Excellent";
+        reason = "Strong performance in all key areas.";
+        suggestion = "Maintain consistency and initiative.";
+
+    }
+
+    else if(attendance > 80 && quality > 7 && deadline){
+
+        rating = "Very Good";
+        reason = "Good attendance and work quality.";
+        suggestion = "Improve teamwork and leadership.";
+
+    }
+
+    else if(quality > 8 && teamwork < 5){
+
+        rating = "Technically Strong";
+        reason = "Excellent technical skills but weak teamwork.";
+        suggestion = "Improve communication skills.";
+
+    }
+
+    else if(projects >= 3 && quality > 6){
+
+        rating = "Good";
+        reason = "Good project contribution.";
+        suggestion = "Increase consistency.";
+
+    }
+
+    else if(teamwork > 8 && quality < 5){
+
+        rating = "Good Team Player";
+        reason = "Strong teamwork but low technical performance.";
+        suggestion = "Improve work skills.";
+
+    }
+
+    else if(attendance > 85 && !deadline){
+
+        rating = "Irregular Performer";
+        reason = "Misses deadlines despite good attendance.";
+        suggestion = "Improve time management.";
+
+    }
+
+    else if(attendance > 65 && quality > 5){
+
+        rating = "Average";
+        reason = "Moderate overall performance.";
+        suggestion = "Improve productivity.";
+
+    }
+
+    else if(projects < 2 && quality < 5){
+
+        rating = "Underperformer";
+        reason = "Low project contribution and quality.";
+        suggestion = "Increase involvement.";
+
+    }
+
+    else if(attendance < 60 && !deadline){
+
+        rating = "Poor";
+        reason = "Low attendance and missed deadlines.";
+        suggestion = "Improve discipline.";
+
+    }
+
+    else{
+
+        rating = "Needs Improvement";
+        reason = "Performance below expectations.";
+        suggestion = "Work on all performance areas.";
+
+    }
+
+
+    document.getElementById("result").innerHTML = `
+
+        <p><b>Attendance:</b> ${attendance}%</p>
+
+        <p><b>Quality:</b> ${quality}</p>
+
+        <p><b>Teamwork:</b> ${teamwork}</p>
+
+        <p><b>Projects:</b> ${projects}</p>
+
+        <p><b>Deadline Met:</b> ${deadline ? "Yes" : "No"}</p>
+
+        <hr style="margin:15px 0;">
+
+        <p><b>Rating:</b> ${rating}</p>
+
+        <p><b>Reason:</b> ${reason}</p>
+
+        <p><b>Suggestion:</b> ${suggestion}</p>
+
+    `;
+}
+
+</script>
+
+</body>
+</html>
